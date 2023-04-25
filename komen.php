@@ -29,7 +29,7 @@ include("session.php");
       </form>
     <div class="icon me-auto mb-2 mb-lg-0">
       <h5>
-      <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
+       <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
       </h5>
     </div>
 </nav>
@@ -60,74 +60,50 @@ include("session.php");
 </ul>
   </div>
   <div class="col-md-10 mt-2">
-  <?php 
-	if(isset($_GET['pesan'])){
-		$pesan = $_GET['pesan'];
-		if($pesan == "input"){
-			echo "Data berhasil di input.";
-		}else if($pesan == "update"){
-			echo "Data berhasil di update.";
-		}else if($pesan == "hapus"){
-			echo "Data berhasil di hapus.";
-		}
-	}
-	?>
   <section>
 <div class="conten">
-<h3>Objek Wisata</h3>
-	<br/>
-	<a class="btn btn-success" href="tambahwisata.php"><i class="fa fa-add"></i>Tambahkan Data</a><br></br>
+<br/>
+<h3>Hasil Review Wisatawan</h3>
+	<a class="btn btn-success" href="pesan.php"><i class="fa-solid fa-eye m-2"></i>Lihat Pesan Pengunjung</a><br></br>
+    <div style="border: 1px dashed red; padding: 20px; width: 99%; height: 105px;">
+    <pre>Ket: Untuk kolom fasilitas,internet,keadaan jalanan, dan pelayanan jika:
+     Nilai kurang atau sama dengan 1 artinya kurang baik
+     Nilai kurang atau sama dengan 2 dan lebih besar dari 1  artinya cukup baik
+     Nilai kurang atau sama dengan 3 dan lebih besar dari 2  artinya sangat baik</pre>
+    </div><br/>
   <div class="table-responsive">
 	<table class="table table-striped table-bordered table-hover">
-		<tr>
-			<th>No</th>
-			<th>Nama Tempat</th>
-			<th>Alamat</th>
-      <th>Koordinat</th>	
-      <th>Marker</th>		
-      <th>Gambar</th>
-      <th>Pengelola</th>			
-      <th>Informasi</th>
-      <th>Aksi</th>	
-		</tr>
-
-		<?php 
-		include "../koneksi.php";
-		$query= "SELECT * FROM wisata,desa,jenis 
-    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=1 ORDER BY id_tempat DESC";
-		$result=mysqli_query($koneksi,$query);
-		if(mysqli_num_rows($result)>0){
-		$no = 1;
-		while($data = mysqli_fetch_assoc($result)){
-		?>
+    <tr>
+      <th>No</th>
+      <th>Nama Tempat</th>
+      <th>Jumlah Tanggapan</th>
+      <th>Fasilitas</th>
+      <th>Internet</th>
+      <th>Keadaan Jalan</th>
+      <th>Pelayanan</th>
+      <th>Aksi</th>
+    </tr>
+	<?php 
+	include "../koneksi.php";
+	$query= "SELECT wisata.id_tempat,nm_tempat, COUNT(id_komen) AS jumlah,AVG(fasilitas) AS rfasilitas, AVG(internet) AS rinternet, AVG(jalanan) AS rjalanan, AVG(pelayanan) AS rpelayanan
+    FROM wisata,komentar WHERE wisata.id_tempat=komentar.id_tempat GROUP BY wisata.id_tempat";
+	$result=mysqli_query($koneksi,$query);
+	if(mysqli_num_rows($result)>0){
+	$no = 1;
+	while($data = mysqli_fetch_assoc($result)){
+	?>
       <tr>
           <!--untuk menampilkannya berdasarkan field yang ada pada tabel data karyawan-->
           <td align="center"><?php echo $no."."; ?></td>
           <td><?php echo $data['nm_tempat']; ?></td>
-          <td>
-            <?php echo $data['alamat']; ?><br/>
-            Desa : <?php echo $data['desa']; ?>
-          </td>
-          <td><?php echo $data['lat_long']; ?></td>
-          <td><img src="upload/<?php echo $data['mrk_tempat'] ?>" width="50px" height="20px" /></td>
-          <td><img src="upload/<?php echo $data['gbr_tempat'] ?>" width="50px" height="20px" /></td>
-          <td>
-            <?php echo $data['pj_tempat']; ?><br/>
-            <?php echo $data['ktk_tempat'];?>
-          </td>
-          <td>
-            <?php echo $data['info_tempat']; ?><br/>
-            Fasilitas : <?php echo $data['fas_tempat']; ?><br/>
-            Harga     : <?php echo $data['harga']; ?>
-            
-          </td>
+          <td><?php echo $data['jumlah']; ?></td>
+          <td><?php echo number_format($data['rfasilitas'],2); ?></td>
+          <td><?php echo number_format($data['rinternet'],2); ?></td>
+          <td><?php echo number_format($data['rjalanan'],2); ?></td>
+          <td><?php echo number_format($data['rpelayanan'],2); ?></td>
           <td align="center">
-          <a class="btn btn-info btn-sx" href="editwisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">
-          <i class="fa fa-edit"></i>Edit</a>
-          <a class="btn btn-danger btn-sx" href="hapuswisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">
-          <i class="fa fa-trash"></i>Hapus</a>
-
-		  </td>
+          <a class="btn btn-success btn-sx" href="hapuskomen.php?id_tempat=<?php echo $data['id_tempat']; ?>">
+          <i class="fa-solid fa-check"></i>Telah Diperbaiki</a></td>
       </tr>
 		<?php 
 		$no++;

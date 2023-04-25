@@ -60,79 +60,25 @@ include("session.php");
 </ul>
   </div>
   <div class="col-md-10 mt-2">
-  <?php 
-	if(isset($_GET['pesan'])){
-		$pesan = $_GET['pesan'];
-		if($pesan == "input"){
-			echo "Data berhasil di input.";
-		}else if($pesan == "update"){
-			echo "Data berhasil di update.";
-		}else if($pesan == "hapus"){
-			echo "Data berhasil di hapus.";
-		}
-	}
-	?>
   <section>
-<div class="conten">
-<h3>Objek Wisata</h3>
-	<br/>
-	<a class="btn btn-success" href="tambahwisata.php"><i class="fa fa-add"></i>Tambahkan Data</a><br></br>
-  <div class="table-responsive">
-	<table class="table table-striped table-bordered table-hover">
-		<tr>
-			<th>No</th>
-			<th>Nama Tempat</th>
-			<th>Alamat</th>
-      <th>Koordinat</th>	
-      <th>Marker</th>		
-      <th>Gambar</th>
-      <th>Pengelola</th>			
-      <th>Informasi</th>
-      <th>Aksi</th>	
-		</tr>
-
-		<?php 
-		include "../koneksi.php";
-		$query= "SELECT * FROM wisata,desa,jenis 
-    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=1 ORDER BY id_tempat DESC";
-		$result=mysqli_query($koneksi,$query);
-		if(mysqli_num_rows($result)>0){
-		$no = 1;
-		while($data = mysqli_fetch_assoc($result)){
-		?>
-      <tr>
-          <!--untuk menampilkannya berdasarkan field yang ada pada tabel data karyawan-->
-          <td align="center"><?php echo $no."."; ?></td>
-          <td><?php echo $data['nm_tempat']; ?></td>
-          <td>
-            <?php echo $data['alamat']; ?><br/>
-            Desa : <?php echo $data['desa']; ?>
-          </td>
-          <td><?php echo $data['lat_long']; ?></td>
-          <td><img src="upload/<?php echo $data['mrk_tempat'] ?>" width="50px" height="20px" /></td>
-          <td><img src="upload/<?php echo $data['gbr_tempat'] ?>" width="50px" height="20px" /></td>
-          <td>
-            <?php echo $data['pj_tempat']; ?><br/>
-            <?php echo $data['ktk_tempat'];?>
-          </td>
-          <td>
-            <?php echo $data['info_tempat']; ?><br/>
-            Fasilitas : <?php echo $data['fas_tempat']; ?><br/>
-            Harga     : <?php echo $data['harga']; ?>
-            
-          </td>
-          <td align="center">
-          <a class="btn btn-info btn-sx" href="editwisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">
-          <i class="fa fa-edit"></i>Edit</a>
-          <a class="btn btn-danger btn-sx" href="hapuswisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">
-          <i class="fa fa-trash"></i>Hapus</a>
-
-		  </td>
-      </tr>
-		<?php 
+<div id="main">
+<h1 style="background-color: #6495ed; color:white">Pesan Pengunjung</h1>
+<br/>
+  <div style="background-color: #f2f2f2; border: 1px solid #ccc; padding: 10px;">
+	<?php 
+	include "../koneksi.php";
+	$query= "SELECT * FROM wisata,komentar,tb_user
+    WHERE wisata.id_tempat=komentar.id_tempat AND komentar.user=tb_user.user";
+	$result=mysqli_query($koneksi,$query);
+	if(mysqli_num_rows($result)>0){
+	$no = 1;
+	while($data = mysqli_fetch_assoc($result)){
+	
+    echo"<div style='border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;'><strong>".$data["namalengkap"]."</strong><br>"."<b>".$data["nm_tempat"]."</b> : ".$data["komentar"]." ".$data["saran"]."<br><small style='font-size: 10px;'>".$data["tanggal"]."</small></div><br>";
+		
 		$no++;
-		} 
-		}?>
+    }
+		} ?>
 	</table>
   </div>
 </div>

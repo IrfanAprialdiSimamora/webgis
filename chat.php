@@ -1,6 +1,6 @@
 <?php
-   session_start();
-   include("session.php");
+session_start();
+include("session.php");
 ?>
 <!doctype html>
 <html lang="en">
@@ -11,20 +11,15 @@
     <link rel="stylesheet" href="fontawesome-free/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" />
     <style>
-        /* ukuran peta */
-        #mapid {
-            height: 100%;
-        }
         .jumbotron{
-            height: 100%;
+            width: 98%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
             border-radius: 0;
-        }
-        body{
-            background-color: #ebe7e1;
         }
     </style>
 </head>
@@ -70,7 +65,7 @@
                 }?>
           </ul>
       </ul>
-      <form action="caripeta.php" class="d-flex" role="search" method="GET">
+      <form action="cari.php" class="d-flex" role="search" method="GET">
         <input name="cari" class="form-control me-2" type="text" placeholder="Cari" aria-label="Search">
         <button class="btn-ligth" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
@@ -91,7 +86,7 @@
         <a href="ubahprofil.php"><i class="fa-solid fa-user mr-3" data-toggle="tooltip" title="Ubah Profil"></i>Ubah Profil</a>
       </li>
       <li class="nav-item ">
-        <a href="logout.php"><i class="fas fa-sign-out-alt mr-3" data-toggle="tooltip" title="Log Out"></i>Logout</a>
+        <a href="logout.php"><i class="fas fa-sign-out-alt mr-3" data-toggle="tooltip" title="Log Out"></i>Login</a>
       </li>
       </h5>
     </div>
@@ -100,59 +95,69 @@
     </div>
   </div>
 </nav>
-<div id="mapid"></div>
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
-
-        <script>
-        // set lokasi latitude dan longitude, lokasinya kota palembang 
-        var mymap = L.map('mapid').setView([-3.470928, 119.261055], 12);   
-        //setting maps menggunakan api mapbox bukan google maps, daftar dan dapatkan token      
-        L.tileLayer(
-            'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19,
-		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-	    }).addTo(mymap);
-
-
-        // buat variabel berisi fugnsi L.popup 
-        var popup = L.popup();
-
-        // buat fungsi popup saat map diklik
-        function onMapClick(e) {
-            popup
-                .setLatLng(e.latlng)
-                .setContent("koordinatnya adalah " + e.latlng
-                    .toString()
-                    ) //set isi konten yang ingin ditampilkan, kali ini kita akan menampilkan latitude dan longitude
-                .openOn(mymap);
-
-            document.getElementById('latlong').value = e.latlng //value pada form latitde, longitude akan berganti secara otomatis
+<div class="conten">
+<div class="jumbotron">
+	<form method = 'POST' action = 'addchat.php' enctype="multipart/form-data">
+<h3 font="Arial" align="center">Berikan Pendapat Anda</h3>
+<div class="modal-body">
+      <div class="form-group">
+    <label class="control-label" for="nm_tempat">Tempat yang Ingin Dikomentari</label>
+	  <select to name="nm_tempat" class="form-control" required>
+      <option value="">- Pilih -</option>
+	  <?php
+        $query="SELECT*FROM wisata";
+        $result=mysqli_query($koneksi,$query);
+        while($data=mysqli_fetch_assoc($result)){
+          echo'<option value="'.$data['id_tempat'].'">'.$data['nm_tempat'].'</option>';
         }
-        mymap.on('click', onMapClick); //jalankan fungsi
-        <?php
-        include "koneksi.php";  //koneksi ke database
-        $tampil = mysqli_query($koneksi, "select * from wisata"); //ambil data dari tabel lokasi
-        while($hasil = mysqli_fetch_array($tampil)){ ?>
-        var icon1=L.icon({
-          iconUrl:'admin/upload/<?php echo $hasil['mrk_tempat'];?>',
-          iconSize: [30, 45],
-        });
-        //melooping data menggunakan while
-        //menggunakan fungsi L.marker(lat, long) untuk menampilkan latitude dan longitude
-        //menggunakan fungsi str_replace() untuk menghilankan karakter yang tidak dibutuhkan
-        L.marker([<?php echo str_replace(['[', ']', 'LatLng', '(', ')'], '', $hasil['lat_long']); ?>], {icon:icon1}).bindPopup(`<?php echo 
-                '<center>
-                <h3>'.$hasil['nm_tempat'].'</h3>
-                <img src="admin/upload/'.$hasil['gbr_tempat'].'" width="280px" height="128px">
-                <br>'.$hasil['alamat'].'<br>
-                <strong>'.$hasil['pj_tempat'].'</strong><br>
-                <a class="btn btn-info" href="tampil.php?id_tempat='.$hasil['id_tempat'].'">Detail</a>
-                <a class="btn btn-warning" href="percobaan/'.$hasil['vr360'].'">View360</a>
-                </center>'; ?>`).addTo(mymap);
-        <?php } ?>
-    </script>
+        ?>
+	  </select><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="fasilitas">Keadaan Fasilitas</label><br/>
+          <label><input type="radio" name="fasilitas" value=3>Baik</label><br/>
+          <label><input type="radio" name="fasilitas" value=2>Cukup</label><br/>
+          <label><input type="radio" name="fasilitas" value=1>Kurang</label>
+      </div>
+      <br/>
+      <div class="form-group">
+          <label class="control-label" for="jalanan">Akses Transpostasi</label><br/>
+          <label><input type="radio" name="jalanan" value=3>Baik</label><br/>
+          <label><input type="radio" name="jalanan" value=2>Cukup</label><br/>
+          <label><input type="radio" name="jalanan" value="1">Kurang</label>
+      </div>
+      <br/>
+      <div class="form-group">
+          <label class="control-label" for="internet">Akses Internet</label><br/>
+          <label><input type="radio" name="internet" value=3>Baik</label><br/>
+          <label><input type="radio" name="internet" value=2>Cukup</label><br/>
+          <label><input type="radio" name="internet" value=1>Kurang</label>
+      </div>
+      <br/>
+      <div class="form-group">
+          <label class="control-label" for="pelayanan">Pelayanan</label><br/>
+          <label><input type="radio" name="pelayanan" value=3>Baik</label><br/>
+          <label><input type="radio" name="pelayanan" value=2>Cukup</label><br/>
+          <label><input type="radio" name="pelayanan" value=1>Kurang</label>
+      </div>
+      <br/>
+
+    <div class="form-group">
+          <label class="control-label" for="komentar">Komentar</label>
+          <textarea type="text" name="komentar" row="7" cols="40" class="form-control"></textarea><br/>
+    </div>
+    <div class="form-group">
+          <label class="control-label" for="saran">Saran</label>
+          <textarea type="text" name="saran" row="7" cols="40" class="form-control"></textarea><br/>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <input class="btn btn-success m-1" type="submit" Value="Kirim">
+    <input class="btn btn-danger" type="reset" Value="Bersihkan">
+      </div>
+	</form>
+</div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>

@@ -1,3 +1,7 @@
+<?php
+session_start();
+include("session.php");
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,7 +21,7 @@
     
     <div class="icon me-auto mb-2 mb-lg-0">
       <h5>
-        <i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
       </h5>
     </div>
 </nav>
@@ -65,12 +69,14 @@
 <h3>Desa Wisata</h3>
 	<br/>
 	<a class="btn btn-success" href="tambahdesa.php">+ Tambahkan Desa</a><br></br>
-	<table class="table table-striped table-responsive table-bordered">
+  <div class="table-responsive">
+	<table class="table table-striped table-bordered table-hover">
 		<tr>
 			<th>No</th>
 			<th>Desa</th>
-			<th>Aksi</th>			
-			
+      <th>Deskripsi Desa</th>
+      <th>Link Video</th>
+			<th>Aksi</th>				
 		</tr>
 
 		<?php 
@@ -81,13 +87,14 @@
 		$no = 1;
 		while($data = mysqli_fetch_assoc($result)){
 		?>
-      <tr>
-          <!--untuk menampilkannya berdasarkan field yang ada pada tabel data karyawan-->
-          <td><?php echo $no; ?></td>
+      <tr><!--untuk menampilkannya berdasarkan field yang ada pada tabel data karyawan-->
+          <td align="center"><?php echo $no; ?></td>
           <td><?php echo $data['desa']; ?></td>
-          <td>
-		  <a class="btn btn-warning" href="editdesa.php?id_desa=<?php echo $data['id_desa']; ?>">Ubah</a>
-		  <a class="btn btn-danger" href="hapusdesa.php?id_desa=<?php echo $data['id_desa']; ?>">Hapus</a>
+          <td><?php echo $data['deskripsi']; ?></td>
+          <td><?php echo $data['linkvid']; ?></td>
+          <td align="center">
+		  <a class="btn btn-info btn-sx" href="editdesa.php?id_desa=<?php echo $data['id_desa']; ?>"><i class="fa fa-edit"></i>Edit</a>
+		  <a class="btn btn-danger btn-sx" href="hapusdesa.php?id_desa=<?php echo $data['id_desa']; ?>"><i class="fa fa-trash"></i>Hapus</a>
 
 		  </td>
       </tr>
@@ -96,6 +103,7 @@
 		} 
 		}?>
 	</table>
+  </div>
 </div>
 </section>
   </div>

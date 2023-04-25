@@ -10,9 +10,9 @@
   
 </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-warning fixed-top">
+  <nav class="navbar navbar-expand-lg bg-warning fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
+    <a class="navbar-brand" href="index.php"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -38,38 +38,52 @@
             Desa Wisata
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Karama</a></li>
-            <li><a class="dropdown-item" href="#">Mirring</a></li>
-            <li><a class="dropdown-item" href="#">Tangnga-tangnga</a></li>
-            <li><a class="dropdown-item" href="#">Lapeo</a></li>
-            <li><a class="dropdown-item" href="#">Laliko</a></li>
-            <li><a class="dropdown-item" href="#">Tonyaman</a></li>
-            <li><a class="dropdown-item" href="#">Tamangalle</a></li>
-            <li><a class="dropdown-item" href="#">Galeso</a></li>
-            <li><a class="dropdown-item" href="#">Buku</a></li>
-            <li><a class="dropdown-item" href="#">Nepo</a></li>
+          <?php 
+            include "koneksi.php";
+            $query= "SELECT * FROM desa";
+            $result=mysqli_query($koneksi,$query);
+            if(mysqli_num_rows($result)>0){
+            $no = 1;
+            while($data = mysqli_fetch_assoc($result)){
+            echo "<a class='dropdown-item' href='desawisata.php?id_desa=" . $data['id_desa'] . "'>" . $data['desa'] . "</a>";
+            $no++;
+                } 
+                }?>
           </ul>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Cari" aria-label="Search">
+      <form action="cari.php" class="d-flex" role="search" method="GET">
+        <input name="cari" class="form-control me-2" type="text" placeholder="Cari" aria-label="Search">
         <button class="btn-ligth" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Menu Lainnya</a>
+      <ul class="dropdown-menu">
       <div class="icon mt-2 mb-2 mb-lg-0 m-3">
       <h5>
-        <a href="suhu.php"><i class="fa-solid fa-thermometer" data-toggle="tooltip" title="Cuaca"></i></a>
-        <a href="chat.php"><i class="fa-solid fa-envelope" data-toggle="tooltip" title="Masukan"></i></a>
-        <a href="login.php"><i class="fas fa-sign-in-alt" data-toggle="tooltip" title="Log In"></i></a>
+      <li class="nav-item ">
+        <a href="suhu.php"><i class="fa-solid fa-thermometer mr-2" data-toggle="tooltip" title="Cuaca"></i>Cuaca</a>
+      </li>
+      <li class="nav-item ">
+        <a href="chat.php"><i class="fa-solid fa-envelope mr-2" data-toggle="tooltip" title="Masukan"></i>Masukan</a>
+      </li>
+      <li class="nav-item ">
+        <a href="login.php"><i class="fas fa-sign-in-alt mr-2" data-toggle="tooltip" title="Log In"></i>Login</a>
+      </li>
       </h5>
     </div>
+    </ul>
+    </ul>
     </div>
   </div>
 </nav>
     <div class="conten">
-    <h3 align="center">Objek Wisata di Kabupaten Polewali Mandar</h3>
+    <h3 align="center">Objek Wisata di Kabupaten Polewali Mandar</h3><hr>
     <?php 
     include "koneksi.php";
     $query= "SELECT * FROM wisata,desa,jenis 
-    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=1";
+    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=1 ORDER BY id_tempat DESC";
     $result=mysqli_query($koneksi,$query);
     if(mysqli_num_rows($result)>0){
     $no = 1;
@@ -77,9 +91,10 @@
 	?>
     <div class="box-gambar">
         <img src="admin/upload/<?php echo $data['gbr_tempat'];?>"/>
-        <?php echo $data['nm_tempat']."<br><br>";?>
-        <a class="btn btn-info" href="admin/editwisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">Detail</a>
-		    <a class="btn btn-success" href="#">VR360</a>
+        <b><?php echo $data['nm_tempat']."";?></b><br/>
+        <?php echo $data['alamat']."<br><br>";?>
+        <a class="btn btn-success" href="percobaan/<?php echo $data['vr360'];?>">View360</a>
+        <a class="btn btn-info" href="tampil.php?id_tempat=<?php echo $data['id_tempat']; ?>">Detail</a>
     </div>
     <?php $no++;
 		} 

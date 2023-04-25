@@ -2,7 +2,7 @@
    include('koneksi.php');
    session_start();
    
-   $user_check = $_SESSION['login_user'];
+   $user_check = $_SESSION['user'];
    
    $ses_sql = mysqli_query($koneksi,"select user from tb_user where user = '$user_check' ");
    
@@ -10,8 +10,8 @@
    
    $login_session = $row['user'];
    
-   if(!isset($_SESSION['login_user'])){
-      header("location:index.php");
+   if(!isset($_SESSION['user'])){
+      header("location:login.php");
       die();
    }
 ?>

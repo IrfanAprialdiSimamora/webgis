@@ -1,17 +1,32 @@
 <?php
- include("../koneksi.php"); // untuk memanggil file koneksi.php
+session_start();
+include("session.php");
+?>
+<?php
+ include("../koneksi.php");
 ?>
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" integrity="sha384-WJUUqfoMmnfkBLne5uxXj+na/c7sesSJ32gI7GfCk4zO4GthUKhSEGyvQ839BC51" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="admin.css">
     <link rel="stylesheet" href="../fontawesome-free/css/all.min.css">
+    <style>
+        .jumbotron{
+            width: 98%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            border-radius: 0;
+        }
+        body{
+            background-color: #ebe7e1;
+        }
+    </style>
     <title>Admin</title>
   </head>
   <body>
@@ -20,7 +35,7 @@
     
     <div class="icon me-auto mb-2 mb-lg-0">
       <h5>
-        <i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
       </h5>
     </div>
 </nav>
@@ -51,15 +66,19 @@
 </ul>
   </div>
   <div class="col-md-10 mt-2">
-  <section>
-<div class="conten">
+<div class="jumbotron">
 	<form method = 'POST' action = 'addwisata.php' enctype="multipart/form-data">
 <h3>Form Tambah Data</h3>
-<table class="table table-responsive table-striped">
-    <tr><td>Nama Tempat</td> <td><input type="text" name="nm_tempat" size="30" required/></td></tr>
-    <tr><td>Desa</td>
-    <td>
-	  <select name="desa">
+<hr>
+<div class="modal-body">
+  <div class="form-group">
+    <label class="control-label" for="exampleFormControlInput1"><b>Nama Tempat</b></label>
+    <input type="text" name="nm_tempat" class="form-control border border-info" required/><br/>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="desa"><b>Desa</b></label>
+	  <select name="desa" class="form-control border border-info" required>
+    <option value="">- Pilih -</option>
 	  <?php
         $query="SELECT*FROM desa";
         $result=mysqli_query($koneksi,$query);
@@ -67,11 +86,12 @@
           echo'<option value="'.$data['id_desa'].'">'.$data['desa'].'</option>';
         }
         ?>
-	  </select>
-    </td></tr>
-    <tr><td>Jenis Wisata</td>
-    <td>
-	  <select name="jenis_wisata">
+	  </select><br/>
+      </div>
+      <div class="form-group">
+    <label class="control-label" for="jenis_wisata"><b>Jenis Wisata</b></label>
+	  <select name="jenis_wisata" class="form-control border border-info" required>
+    <option value="">- Pilih -</option>
 	  <?php
         $query="SELECT*FROM jenis";
         $result=mysqli_query($koneksi,$query);
@@ -79,24 +99,55 @@
           echo'<option value="'.$data['id_jenis'].'">'.$data['jenis_wisata'].'</option>';
         }
         ?>
-	  </select>
-    </td></tr>
-    <tr><td>Latitude</td> <td><input type="text" name="lat_tempat" size="30" required/></td></tr>
-    <tr><td>Longtitude</td> <td><input type="text" name="long_tempat" size="30" required/></td></tr>
-    <tr><td>Marker</td> <td><input type="file" name="mrk_tempat" size="30" required/></td></tr>
-    <tr><td>Gambar</td> <td><input type="file" name="gbr_tempat" size="30" required/></td></tr>
-    <tr><td>Penanggungjawab</td> <td><input type="text" name="pj_tempat" size="30" required/></td></tr>
-    <tr><td>Kontak</td> <td><input type="text" name="ktk_tempat" size="30" required/></td></tr>
-    <tr><td>Fasilitas</td> <td><textarea type="text" name="fas_tempat" row="5" cols="40" ></textarea></td></tr>
-    <tr><td>Informasi</td> <td><textarea type="text" name="info_tempat" row="5" cols="40"></textarea></td></tr>
-    <td><input class="btn btn-primary" type="submit" Value="Simpan" alignment="right">
-    <input class="btn btn-warning" type="reset" Value="Bersihkan" >
-    <a class="btn btn-danger" href = 'dassbord.php'> Kembali </a></td>
-</table>
+	  </select><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="alamat"><b>Alamat</b></label>
+          <input type="text" name="alamat" class="form-control border border-info" required/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="lat_long"><b>Latitude, Longitude</b></label>
+          <input type="text" name="lat_long" class="form-control border border-info" required/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="mrk_tempat"><b>Marker</b></label>
+          <input type="file" name="mrk_tempat" class="form-control border border-info"required/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="gbr_tempat"><b>Gambar</b></label>
+          <input type="file" name="gbr_tempat" class="form-control border border-info"><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="pj_tempat"><b>Penanggungjawab</b></label>
+          <input type="text" name="pj_tempat" class="form-control border border-info"/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="ktk_tempat"><b>Kontak</b></label>
+          <input type="text" name="ktk_tempat" class="form-control border border-info"/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="fas_tempat"><b>Fasilitas</b></label>
+          <textarea type="text" name="fas_tempat" row="7" cols="40" class="form-control border border-info"></textarea><br/>
+      </div>
+    <div class="form-group">
+          <label class="control-label" for="info_tempat"><b>Informasi</b></label>
+          <textarea type="text" name="info_tempat" row="7" cols="40" class="form-control border border-info"></textarea><br/>
+    </div>
+    <div class="form-group">
+          <label class="control-label" for="harga"><b>Harga</b></label>
+          <textarea type="text" name="harga" row="7" cols="40" class="form-control border border-info"></textarea><br/>
+    </div>
+    <div class="form-group">
+          <label class="control-label" for="vr360"><b>View360</b></label>
+          <input type="file" name="vr360" class="form-control border border-info"><br/>
+      </div>
+    </div>
+    <div class="modal-footer">
+    <input class="btn btn-danger mr-10" type="reset" Value="Bersihkan">
+    <input class="btn btn-success" type="submit" Value="Simpan">
+      </div>
 			</form>
 </div>
- 
-</section>
   </div>
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" 

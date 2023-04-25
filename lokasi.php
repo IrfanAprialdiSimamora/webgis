@@ -1,7 +1,3 @@
-<?php
-   session_start();
-   include("session.php");
-?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,7 +13,11 @@
     <style>
         /* ukuran peta */
         #mapid {
-            height: 100%;
+            height: 100%; /* 60px adalah ketinggian navbar */
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            z-index: -1; /* agar peta di bawah navbar */
         }
         .jumbotron{
             height: 100%;
@@ -29,9 +29,9 @@
     </style>
 </head>
   <body>
-  <nav class="navbar navbar-expand-lg bg-warning fixed-top">
+    <nav class="navbar navbar-expand-lg bg-warning fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="beranda.php"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
+    <a class="navbar-brand" href="index.php"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -82,16 +82,13 @@
       <div class="icon mt-2 mb-2 mb-lg-0 m-3">
       <h5>
       <li class="nav-item ">
-        <a href="suhu.php"><i class="fa-solid fa-thermometer mr-3" data-toggle="tooltip" title="Cuaca"></i>Cuaca</a>
+        <a href="suhu.php"><i class="fa-solid fa-thermometer mr-2" data-toggle="tooltip" title="Cuaca"></i>Cuaca</a>
       </li>
       <li class="nav-item ">
-        <a href="chat.php"><i class="fa-solid fa-envelope mr-3" data-toggle="tooltip" title="Masukan"></i>Masukan</a>
+        <a href="chat.php"><i class="fa-solid fa-envelope mr-2" data-toggle="tooltip" title="Masukan"></i>Masukan</a>
       </li>
       <li class="nav-item ">
-        <a href="ubahprofil.php"><i class="fa-solid fa-user mr-3" data-toggle="tooltip" title="Ubah Profil"></i>Ubah Profil</a>
-      </li>
-      <li class="nav-item ">
-        <a href="logout.php"><i class="fas fa-sign-out-alt mr-3" data-toggle="tooltip" title="Log Out"></i>Logout</a>
+        <a href="login.php"><i class="fas fa-sign-in-alt mr-2" data-toggle="tooltip" title="Log In"></i>Login</a>
       </li>
       </h5>
     </div>
@@ -107,7 +104,7 @@
 
         <script>
         // set lokasi latitude dan longitude, lokasinya kota palembang 
-        var mymap = L.map('mapid').setView([-3.470928, 119.261055], 12);   
+        var mymap = L.map('mapid').setView([-3.418840,119.314690], 12);   
         //setting maps menggunakan api mapbox bukan google maps, daftar dan dapatkan token      
         L.tileLayer(
             'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -152,6 +149,26 @@
                 <a class="btn btn-warning" href="percobaan/'.$hasil['vr360'].'">View360</a>
                 </center>'; ?>`).addTo(mymap);
         <?php } ?>
+    
+    // menambahkan marker pada lokasi pengguna
+		function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+
+			L.marker(e.latlng).addTo(mymap)
+				.bindPopup("Kamu berada pada " + radius + " meter dari titik ini").openPopup();
+
+			L.circle(e.latlng, radius).addTo(mymap);
+		}
+
+		// menampilkan pesan jika lokasi pengguna tidak ditemukan
+		function onLocationError(e) {
+			alert(e.message);
+		}
+
+		// memanggil fungsi geolocation untuk mendapatkan lokasi pengguna
+		mymap.on('locationfound', onLocationFound);
+		mymap.on('locationerror', onLocationError);
+		mymap.locate({setView: true, maxZoom: 12});
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>

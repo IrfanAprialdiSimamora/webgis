@@ -1,31 +1,38 @@
 <?php
-   include("koneksi.php");
    session_start();
-   
+   include("koneksi.php");
    if($_SERVER["REQUEST_METHOD"] == "POST") {
       // username and password sent from form 
       
       $myusername = mysqli_real_escape_string($koneksi,$_POST['user']);
       $mypassword = mysqli_real_escape_string($koneksi,$_POST['passcode']); 
       
-      $sql = "SELECT id FROM tb_user WHERE user = '$myusername' and passcode = '$mypassword'";
-      $result = mysqli_query($koneksi,$sql);
-      $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-      $active = $row;
-      
-      $count = mysqli_num_rows($result);
-      
-      // If result matched $myusername and $mypassword, table row must be 1 row
-		
-      if($count == 1) {
-         //session_register("user");
-         $_SESSION['login_user'] = $myusername;
-         
+      $login =mysqli_query ($koneksi,"SELECT * FROM tb_user 
+      WHERE user = '$myusername' and passcode = '$mypassword'");
+      $cek=mysqli_num_rows($login);	
+      if($cek > 0) {
+        $data=mysqli_fetch_assoc($login);
+        $level = $data['level'];
+         if($level=="admin"){
+         $_SESSION['user'] = $myusername;
+         $_SESSION['namalengkap']="namalengkap";
+         $_SESSION['level']="level";
          header("location: admin/dassbord.php");
-      }else {
-         $error = "Your Login Name or Password is invalid";
-      }
+         }
+         else if($level=="client"){
+            $_SESSION['user'] = $myusername;
+            $_SESSION['namalengkap']="namalengkap";
+            $_SESSION['level']="level";
+        header("location: beranda.php");
+        }
+        else{
+            header("location: login.php");
+        }
    }
+   else {
+    $error = "Your Login Name or Password is invalid";
+ }
+}
 ?>
 <!DOCTYPE html> 
 <head>

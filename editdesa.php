@@ -1,3 +1,7 @@
+<?php
+session_start();
+include("session.php");
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,6 +13,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" integrity="sha384-WJUUqfoMmnfkBLne5uxXj+na/c7sesSJ32gI7GfCk4zO4GthUKhSEGyvQ839BC51" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="admin.css">
     <link rel="stylesheet" href="../fontawesome-free/css/all.min.css">
+    <style>
+      .jumbotron{
+            width: 98%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            border-radius: 0;
+        }
+    </style>
     <title>Admin</title>
   </head>
   <body>
@@ -17,7 +32,7 @@
     
     <div class="icon me-auto mb-2 mb-lg-0">
       <h5>
-        <i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
       </h5>
     </div>
 </nav>
@@ -50,7 +65,7 @@
   <div class="col-md-10 mt-2">
 
   <section>
-<div class="conten">
+<div class="jumbotron">
 <h2>Ubah Data Desa</h2>
 <table class="table table-responsive table-striped">
 <?php
@@ -67,12 +82,11 @@
 
  //syntax php untuk edit data ke database
  if (isset($_POST['edit'])) {
-  $query="UPDATE desa SET desa='".$_POST['desa']."' WHERE id_desa='$no'";
+  $query="UPDATE desa SET desa='".$_POST['desa']."',linkvid='".$_POST['linkvid']."',deskripsi='".$_POST['deskripsi']."'
+          WHERE id_desa='$no'";
 	$result=mysqli_query($koneksi,$query);
 	
   if ($query) {
-   echo "data berhasil disimpan";
-   
    $query="SELECT * FROM desa WHERE id_desa='".$no."'";
    $result=mysqli_query($koneksi,$query);
    //menampilkan data dari query database berbentuk array an ditampilkan di form
@@ -84,16 +98,30 @@
  }
 ?>
  <!--form edit -->
- <form action="" method="POST">
-  <tr>
-   <td>Nama Desa</td>
-   <td><input type="text" name="desa" size="30" value="<?php echo $data['desa']; ?>"></td>
-  </tr>
-  <td><input class="btn btn-primary" type="submit" name="edit" Value="Simpan" alignment="right">
-<input class="btn btn-warning" type="reset" Value="Bersihkan" >
-<a class="btn btn-danger" href = 'dassbord.php'> Kembali </a></td>
+ <form action="" method="POST" enctype="multipart/form-data">
+  <div class="modal-body">
+   <div class="form-group">
+  <label class="control-label" for="desa">Nama Desa</label>
+  <input type="text" name="desa" class="form-control" size="30" value="<?php echo $data['desa']; ?>"><br/>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="linkvid">ID Video Youtube</label>
+      <input type="text" name="linkvid" class="form-control" size="30" value="<?php echo $data['linkvid']; ?>"><br/>
+    </div>
+    <div class="form-group">
+   <label class="control-label" for="deskripsi">Informasi</label>
+   <textarea type="text" name="deskripsi" class="form-control" row="7" cols="40">
+   <?php
+        $query="SELECT*FROM desa WHERE id_desa='$no'";
+        $result=mysqli_query($koneksi,$query);
+        while($data=mysqli_fetch_assoc($result)){
+        echo $data['deskripsi'];
+        }
+        ?>
+   </textarea><br/>
+   </div>
+  <input class="btn btn-success" type="submit" name="edit" Value="Simpan" alignment="right">
  </form>
-</table>
 </div>
     </section>
 

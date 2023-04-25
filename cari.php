@@ -10,9 +10,9 @@
   
 </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-warning fixed-top">
+  <nav class="navbar navbar-expand-lg bg-warning fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
+    <a class="navbar-brand" href="index.php"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -51,8 +51,8 @@
                 }?>
           </ul>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Cari" aria-label="Search">
+      <form action="cari.php" class="d-flex" role="search" method="GET">
+        <input name="cari" class="form-control me-2" type="text" placeholder="Cari" aria-label="Search">
         <button class="btn-ligth" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -79,27 +79,35 @@
   </div>
 </nav>
     <div class="conten">
-    <h3 align="center">Penginapan di Kabupaten Polewali Mandar</h3>
+    <?php 
+if(isset($_GET['cari'])){
+	$cari = $_GET['cari'];
+	echo "<b>Hasil pencarian dari : ".$cari."</b>";
+}
+?>
     <?php 
     include "koneksi.php";
+    if(isset($_GET['cari'])){
+		$cari = $_GET['cari'];
     $query= "SELECT * FROM wisata,desa,jenis 
-    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=4";
+    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND nm_tempat like '%".$cari."%'";
     $result=mysqli_query($koneksi,$query);
     if(mysqli_num_rows($result)>0){
     $no = 1;
     while($data = mysqli_fetch_assoc($result)){
 	?>
+    <h3 align="center"><?php echo $data['jenis_wisata']; ?> di Kabupaten Polewali Mandar</h3>
     <div class="box-gambar">
         <img src="admin/upload/<?php echo $data['gbr_tempat'];?>"/>
-        <b><?php echo $data['nm_tempat']."";?></b><br/>
-        <?php echo $data['alamat']."<br><br>";?>
-        <a class="btn btn-success" href="percobaan/<?php echo $data['vr360'];?>">View360</a>
+        <?php echo $data['nm_tempat']."<br><br>";?>
         <a class="btn btn-info" href="tampil.php?id_tempat=<?php echo $data['id_tempat']; ?>">Detail</a>
+		    <a class="btn btn-success" href="#">VR360</a>
     </div>
     <?php $no++;
 		} 
-		}?>
-        </div>
+		}
+    }?>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>

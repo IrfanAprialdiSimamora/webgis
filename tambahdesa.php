@@ -1,3 +1,7 @@
+<?php
+session_start();
+include("session.php");
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,6 +13,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.rtl.min.css" integrity="sha384-WJUUqfoMmnfkBLne5uxXj+na/c7sesSJ32gI7GfCk4zO4GthUKhSEGyvQ839BC51" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="admin.css">
     <link rel="stylesheet" href="../fontawesome-free/css/all.min.css">
+    <style>
+    .jumbotron{
+            width: 98%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            border-radius: 0;
+        }
+        </style>
     <title>Admin</title>
   </head>
   <body>
@@ -17,7 +32,7 @@
     
     <div class="icon me-auto mb-2 mb-lg-0">
       <h5>
-        <i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
       </h5>
     </div>
 </nav>
@@ -49,15 +64,27 @@
   </div>
   <div class="col-md-10 mt-2">
   <section>
-<div class="conten">
+<div class="jumbotron">
 	<form method = 'POST' action = 'addesa.php'>
 <h3>Form Tambah Desa</h3>
-   <table class="table table-responsive table-striped">
-<tr><td>Nama Desa</td> <td><input type="text" name="desa" size="30" /></td></tr>
-<td><input class="btn btn-primary" type="submit" Value="Simpan" alignment="right">
-<input class="btn btn-warning" type="reset" Value="Bersihkan" >
-<a class="btn btn-danger" href = 'dassbord.php'> Kembali </a></td>
-</table>
+<div class="modal-body">
+     <div class="form-group">
+          <label class="control-label" for="desa">Nama Desa</label>
+          <input type="text" name="desa" class="form-control"/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="linkvid">ID Video Youtube</label>
+          <input type="text" name="linkvid" class="form-control"/><br/>
+      </div>
+      <div class="form-group">
+          <label class="control-label" for="deskripsi">Deskripsi Desa</label>
+          <textarea type="text" name="deskripsi" row="7" cols="40" class="form-control"></textarea><br/>
+      </div>
+</div>
+<div class="modal-footer">
+<input class="btn btn-warning m-2" type="reset" Value="Bersihkan" >
+<a class="btn btn-success" href = 'desa.php'> Kembali </a></td>
+</div>
 			</form>
 </div>
  

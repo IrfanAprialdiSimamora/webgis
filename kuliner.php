@@ -1,3 +1,7 @@
+<?php
+session_start();
+include("session.php");
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -13,11 +17,19 @@
   </head>
   <body>
   <nav class="navbar navbar-expand-lg navbar-lght bg-warning fixed-top">
-    <a class="navbar-brand " href="#">Selamat Datang Admin | <b>WEBGIS Polman</b></a>
-    
+    <a class="navbar-brand " href="dassbord.php">Selamat Datang Admin | <b>WEBGIS Polman</b></a>
+    <ul>
+    <ul>
+      
+      </ul>
+    </ul>
+    <form action="cari.php" class="d-flex" role="search" method="GET">
+        <input name="cari" class="form-control me-2" type="text" placeholder="Cari" aria-label="Search">
+        <button class="btn-ligth" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
     <div class="icon me-auto mb-2 mb-lg-0">
       <h5>
-        <i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Log Out"></i></a>
       </h5>
     </div>
 </nav>
@@ -66,26 +78,22 @@
 	<br/>
 	<a class="btn btn-success" href="tambahwisata.php">+ Tambahkan Data</a><br></br>
 	<table class="table table-striped table-responsive table-bordered">
-		<tr>
+   <tr>
 			<th>No</th>
-			<th>Nama Tempat Makan</th>
-			<th>Latitude</th>
-            <th>Longtitude</th>	
-            <th>Marker</th>		
-            <th>Gambar</th>
-            <th>Penanggungjawab</th>		
-            <th>Kontak</th>	
-			      <th>Fasilitas</th>
-            <th>Informasi</th>	
-            <th>Desa</th>	
-            <th>Jenis</th>
-            <th>Aksi</th>	
+			<th>Nama Tempat</th>
+			<th>Alamat</th>
+      <th>Letak</th>	
+      <th>Marker</th>		
+      <th>Gambar</th>
+      <th>Pengelola</th>			
+      <th>Informasi</th>
+      <th>Aksi</th>	
 		</tr>
 
 		<?php 
 		include "../koneksi.php";
 		$query= "SELECT * FROM wisata,desa,jenis 
-    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=2";
+    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=2 ORDER BY id_tempat DESC";
 		$result=mysqli_query($koneksi,$query);
 		if(mysqli_num_rows($result)>0){
 		$no = 1;
@@ -93,22 +101,30 @@
 		?>
       <tr>
           <!--untuk menampilkannya berdasarkan field yang ada pada tabel data karyawan-->
-          <td><?php echo $no; ?></td>
+          <td align="center"><?php echo $no."."; ?></td>
           <td><?php echo $data['nm_tempat']; ?></td>
-          <td><?php echo $data['lat_tempat']; ?></td>
-          <td><?php echo $data['long_tempat']; ?></td>
-          <td><?php echo $data['mrk_tempat']; ?></td>
-          <td><?php echo $data['gbr_tempat']; ?></td>
-          <td><?php echo $data['pj_tempat']; ?></td>
-          <td><?php echo $data['ktk_tempat'];?></td>
-          <td><?php echo $data['fas_tempat']; ?></td>
-          <td><?php echo $data['info_tempat']; ?></td>
-          <td><?php echo $data['desa']; ?></td>
-          <td><?php echo $data['jenis_wisata']; ?></td>
           <td>
-		  <a class="btn btn-warning" href="editwisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">Ubah</a>
-		  <a class="btn btn-danger" href="hapuswisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">Hapus</a>
-
+            <?php echo $data['alamat']; ?><br/>
+            Desa : <?php echo $data['desa']; ?>
+          </td>
+          <td><?php echo $data['lat_long']; ?></td>
+          <td><img src="upload/<?php echo $data['mrk_tempat'] ?>" width="50px" height="20px" /></td>
+          <td><img src="upload/<?php echo $data['gbr_tempat'] ?>" width="50px" height="20px" /></td>
+          <td>
+            <?php echo $data['pj_tempat']; ?><br/>
+            <?php echo $data['ktk_tempat'];?>
+          </td>
+          <td>
+            <?php echo $data['info_tempat']; ?><br/>
+            Fasilitas : <?php echo $data['fas_tempat']; ?><br/>
+            Harga     : <?php echo $data['harga']; ?>
+            
+          </td>
+          <td align="center">
+          <a class="btn btn-info btn-sx" href="editwisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">
+          <i class="fa fa-edit"></i>Edit</a>
+          <a class="btn btn-danger btn-sx" href="hapuswisata.php?id_tempat=<?php echo $data['id_tempat']; ?>">
+          <i class="fa fa-trash"></i>Hapus</a>
 		  </td>
       </tr>
 		<?php 

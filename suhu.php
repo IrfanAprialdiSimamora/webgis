@@ -14,54 +14,69 @@
   <body>
   <nav class="navbar navbar-expand-lg bg-warning fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
+    <a class="navbar-brand" href="index.php"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Beranda</a>
+      <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.php">Beranda</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link active" href="#">Destinasi</a>
+          <a class="nav-link active" href="destinasi.php">Destinasi</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">Penginapan</a>
+          <a class="nav-link active" href="hotel.php">Penginapan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">Rumah Makan</a>
+          <a class="nav-link active" href="restoran.php">Rumah Makan</a>
         </li>
         <li class="nav-item ">
-          <a class="nav-link active" href="#">Cenderamata</a>
+          <a class="nav-link active" href="cenderamata.php">Cenderamata</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Desa Wisata
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Karama</a></li>
-            <li><a class="dropdown-item" href="#">Mirring</a></li>
-            <li><a class="dropdown-item" href="#">Tangnga-tangnga</a></li>
-            <li><a class="dropdown-item" href="#">Lapeo</a></li>
-            <li><a class="dropdown-item" href="#">Laliko</a></li>
-            <li><a class="dropdown-item" href="#">Tonyaman</a></li>
-            <li><a class="dropdown-item" href="#">Tamangalle</a></li>
-            <li><a class="dropdown-item" href="#">Galeso</a></li>
-            <li><a class="dropdown-item" href="#">Buku</a></li>
-            <li><a class="dropdown-item" href="#">Nepo</a></li>
+          <?php 
+            include "koneksi.php";
+            $query= "SELECT * FROM desa";
+            $result=mysqli_query($koneksi,$query);
+            if(mysqli_num_rows($result)>0){
+            $no = 1;
+            while($data = mysqli_fetch_assoc($result)){
+            echo "<a class='dropdown-item' href='desawisata.php?id_desa=" . $data['id_desa'] . "'>" . $data['desa'] . "</a>";
+            $no++;
+                } 
+                }?>
           </ul>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Cari" aria-label="Search">
+      <form action="cari.php" class="d-flex" role="search" method="GET">
+        <input name="cari" class="form-control me-2" type="text" placeholder="Cari" aria-label="Search">
         <button class="btn-ligth" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Menu Lainnya</a>
+      <ul class="dropdown-menu">
       <div class="icon mt-2 mb-2 mb-lg-0 m-3">
       <h5>
-        <a href="#"><i class="fa-solid fa-envelope" data-toggle="tooltip" title="Masukan"></i></a>
-        <a href="#"><i class="fas fa-sign-in-alt m-3" data-toggle="tooltip" title="Log in"></i></a>
+      <li class="nav-item ">
+        <a href="suhu.php"><i class="fa-solid fa-thermometer mr-2" data-toggle="tooltip" title="Cuaca"></i>Cuaca</a>
+      </li>
+      <li class="nav-item ">
+        <a href="chat.php"><i class="fa-solid fa-envelope mr-2" data-toggle="tooltip" title="Masukan"></i>Masukan</a>
+      </li>
+      <li class="nav-item ">
+        <a href="login.php"><i class="fas fa-sign-in-alt mr-2" data-toggle="tooltip" title="Log In"></i>Login</a>
+      </li>
       </h5>
     </div>
+    </ul>
+    </ul>
     </div>
   </div>
 </nav>

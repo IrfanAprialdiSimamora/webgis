@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>User</title>
     <link rel="stylesheet" href="fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v2" type="text/css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   
 </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-warning fixed-top">
+  <nav class="navbar navbar-expand-lg bg-warning fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
+    <a class="navbar-brand" href="index.php"><i class="fa-solid fa-globe"></i>WEBGIS <strong>POLMAN</strong></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -51,8 +51,8 @@
                 }?>
           </ul>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Cari" aria-label="Search">
+      <form action="cari.php" class="d-flex" role="search" method="GET">
+        <input name="cari" class="form-control me-2" type="text" placeholder="Cari" aria-label="Search">
         <button class="btn-ligth" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -78,28 +78,36 @@
     </div>
   </div>
 </nav>
-    <div class="conten">
-    <h3 align="center">Penginapan di Kabupaten Polewali Mandar</h3>
-    <?php 
-    include "koneksi.php";
-    $query= "SELECT * FROM wisata,desa,jenis 
-    WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND jenis.id_jenis=4";
-    $result=mysqli_query($koneksi,$query);
-    if(mysqli_num_rows($result)>0){
-    $no = 1;
-    while($data = mysqli_fetch_assoc($result)){
-	?>
-    <div class="box-gambar">
-        <img src="admin/upload/<?php echo $data['gbr_tempat'];?>"/>
-        <b><?php echo $data['nm_tempat']."";?></b><br/>
-        <?php echo $data['alamat']."<br><br>";?>
-        <a class="btn btn-success" href="percobaan/<?php echo $data['vr360'];?>">View360</a>
-        <a class="btn btn-info" href="tampil.php?id_tempat=<?php echo $data['id_tempat']; ?>">Detail</a>
-    </div>
-    <?php $no++;
-		} 
-		}?>
-        </div>
+<?php
+  include "koneksi.php"; 
+  $no=$_GET['id_tempat'];
+  $query="SELECT * FROM wisata,jenis,desa
+   WHERE wisata.id_desa=desa.id_desa AND wisata.id_jenis=jenis.id_jenis AND id_tempat='".$no."'";
+  $result=mysqli_query($koneksi,$query);
+  //menampilkan data dari query database berbentuk array an ditampilkan di form
+  if (mysqli_num_rows($result) > 0){
+	$data = mysqli_fetch_assoc($result);
+}
+?>
+<div class="conten">
+<h2 align="center"><?php echo $data['nm_tempat']; ?></h2>
+<table class="table table-responsive table-striped table-bordered table-hover">
+ <tr align="center">
+ <th>Gambar</th>
+ <th><?php echo $data['jenis_wisata'];?></th>
+ </tr>
+  <tr>
+  <td><img src="admin/upload/<?php echo $data['gbr_tempat'] ?>" width="350px" height="320px" /></td>
+  <td>
+  <?php echo $data['info_tempat'];?><br/> <br/>
+  Fasilitas :   <?php echo $data['fas_tempat'];?> <br/> <br/>
+  Harga     :   <?php echo $data['harga']; ?><br/> <br/>
+  Alamat    :   <?php echo $data['alamat']; ?><br/> <br/>
+  Info Lanjut? Hubungi <?php echo $data['pj_tempat']; ?>  di  <?php echo $data['ktk_tempat'];?>    
+  </td>
+  </tr>
+</table>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>
